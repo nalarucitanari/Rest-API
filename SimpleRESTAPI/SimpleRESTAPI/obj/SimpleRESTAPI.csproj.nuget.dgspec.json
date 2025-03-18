@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Semester 4\\Desain Restfull API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj": {}
+    "D:\\Semester 4\\Desain Restfull API\\Rest-API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj": {}
   },
   "projects": {
-    "D:\\Semester 4\\Desain Restfull API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj": {
+    "D:\\Semester 4\\Desain Restfull API\\Rest-API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Semester 4\\Desain Restfull API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj",
+        "projectUniqueName": "D:\\Semester 4\\Desain Restfull API\\Rest-API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj",
         "projectName": "SimpleRESTAPI",
-        "projectPath": "D:\\Semester 4\\Desain Restfull API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj",
+        "projectPath": "D:\\Semester 4\\Desain Restfull API\\Rest-API\\SimpleRESTAPI\\SimpleRESTAPI\\SimpleRESTAPI.csproj",
         "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-        "outputPath": "D:\\Semester 4\\Desain Restfull API\\SimpleRESTAPI\\SimpleRESTAPI\\obj\\",
+        "outputPath": "D:\\Semester 4\\Desain Restfull API\\Rest-API\\SimpleRESTAPI\\SimpleRESTAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -49,6 +49,10 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.1, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.1, )"
             }
           },
           "imports": [
