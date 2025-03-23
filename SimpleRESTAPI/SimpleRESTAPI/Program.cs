@@ -12,6 +12,8 @@ builder.Services.AddOpenApi();
 //Dependency Injection
 builder.Services.AddSingleton<ICategory, CategoryADO>();
 builder.Services.AddSingleton<IInstructor, InstructorADO>();
+builder.Services.AddSingleton<ICourse, CourseADO>();
+
 
 var app = builder.Build();
 
@@ -105,7 +107,33 @@ app.MapDelete("api/v1/instructor/{id}", (IInstructor instructorData, int id) =>
     instructorData.DeleteInstructor(id);
     return Results.NoContent();
 });
+app.MapGet("api/v1/courses",(ICourse courseData) =>
+{
+    var courses = courseData.GetCourses();
+    return courses;
+});
+app.MapGet("api/v1/courses/{id}", (ICourse courseData, int id) =>
+{
+    var course = courseData.GetCourseById(id);
+    return course;
+});
+app.MapPost("api/v1/courses", (ICourse courseData, Course course) =>
+{
+    var newCourse = courseData.AddCourse(course);
+    return newCourse;
+});
+app.MapPut("api/v1/courses", (ICourse courseData, Course course) =>
+{
+    var updateCourse = courseData.UpdateCourse(course);
+    return updateCourse;
+});
+app.MapDelete("api/v1/courses/{id}", (ICourse courseData, int id) =>
+{
+    courseData.DeleteCourse(id);
+    return Results.NoContent();
+});
 app.Run();
+
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
