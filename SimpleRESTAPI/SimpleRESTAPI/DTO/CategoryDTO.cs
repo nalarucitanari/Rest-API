@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleRESTAPI.Models
+namespace SimpleRESTAPI.DTO
 {
-    public class Category
+    public class CategoryDTO
     {
         public int categoryId { get; set; }
         public string categoryName { get; set; } = null!;
-        public IEnumerable<Course> Courses { get; set; } = new List<Course>(); 
     }
 }

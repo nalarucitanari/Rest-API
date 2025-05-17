@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SimpleRESTAPI.Models;
 
 namespace SimpleRESTAPI.Data
@@ -17,32 +18,63 @@ namespace SimpleRESTAPI.Data
         {
             try
             {
-                _context.Courses.Add(course);
+                if (course == null)
+                {
+                    throw new ArgumentNullException(nameof(course), "Course cannot be null");
+                }
+                 _context.Courses.Add(course);
                 _context.SaveChanges();
-                return course;
+
+                var createdCourse = _context.Courses
+                .Include(c => c.Category)
+                .Include(c => c.Instructor)
+                .FirstOrDefault(c => c.CourseId == course.CourseId);
+                
+               
+
+                return createdCourse;
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbex)
             {
-                throw new Exception("Error adding course", ex);
+                throw new Exception("An error occurred while adding the course", dbex);
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception("An unecpected error occurred", ex);
             }
         }
 
         public void DeleteCourse(int courseId)
         {
-            var course = _context.Courses.FirstOrDefault(c => c.CourseId == courseId);
-            if (course == null)
-            {
-                throw new Exception("Course not found");
-            }
             try
             {
+                var course = _context.Courses.Find(courseId);
+                if (course == null)
+                {
+                    throw new Exception("Course not found");
+                }
                 _context.Courses.Remove(course);
                 _context.SaveChanges();
             }
+            catch (DbUpdateException dbex)
+            {
+                throw new Exception("An error occurred while deleting the course", dbex);
+            }
             catch (Exception ex)
             {
-                throw new Exception("Error deleting course", ex);
+                throw new Exception("An unexpected error occurred", ex);
             }
+        }
+
+        public IEnumerable<Course> GetAllCourses()
+        {
+            var courses = _context.Courses
+        .Include(c => c.Category)
+        .Include(c => c.Instructor)
+        .OrderByDescending(c => c.CourseName)
+        .ToList();
+
+    return courses;
         }
 
         public ViewCourseWithCategory GetCourseById(int courseId)
@@ -56,8 +88,19 @@ namespace SimpleRESTAPI.Data
             {
                 CourseId = course.CourseId,
                 CourseName = course.CourseName,
-                categoryId = course.categoryId
+                categoryId = course.categoryId,
+                InstructorId = course.InstructorId
             };
+        }
+
+        public Course GetCourseByIdCourse(int courseId)
+        {
+            var course = _context.Courses.Include(c => c.Category).Include(c => c.Instructor).FirstOrDefault(c => c.CourseId == courseId);
+            if (course == null)
+            {
+                throw new Exception("Course not found");
+            }
+            return course;
         }
 
         public IEnumerable<ViewCourseWithCategory> GetCourses()
@@ -67,28 +110,48 @@ namespace SimpleRESTAPI.Data
             {
                 CourseId = c.CourseId,
                 CourseName = c.CourseName,
-                categoryId = c.categoryId
+                categoryId = c.categoryId,
+                InstructorId = c.InstructorId
             }).ToList();
             return viewCourses;
             
         }
 
+        public IEnumerable<Course> GetCoursesByCategoryId(int categoryId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Course UpdateCourse(Course course)
         {
-            var existingCourse = _context.Courses.FirstOrDefault(c => c.CourseId == course.CourseId);
-            if (existingCourse == null)
-            {
-                throw new Exception("Course not found");
-            }
             try
             {
-                existingCourse.CourseName = course.CourseName;
-                existingCourse.categoryId = course.categoryId;
-                existingCourse.CourseDescription = course.CourseDescription;
-                existingCourse.Duration = course.Duration;
-                _context.Courses.Update(existingCourse);
-                _context.SaveChanges();
-                return existingCourse;
+                if (course == null)
+                {
+                    throw new ArgumentNullException(nameof(course), "Course cannot be null");
+                }
+
+                var existingCourse = _context.Courses.Find(course.CourseId);
+                if (existingCourse == null)
+                {
+                    throw new Exception("Course not found");
+                }
+                    existingCourse.CourseName = course.CourseName;
+                    existingCourse.categoryId = course.categoryId;
+                    existingCourse.InstructorId = course.InstructorId;
+                    existingCourse.CourseDescription = course.CourseDescription;
+                    existingCourse.Duration = course.Duration;
+                    _context.SaveChanges();
+                    var updatedCourse = _context.Courses
+                    .Include(c => c.Category)
+                    .Include(c => c.Instructor)
+                    .FirstOrDefault(c => c.CourseId == course.CourseId);
+
+                    return updatedCourse;
+            }
+            catch (DbUpdateException dbex)
+            {
+                throw new Exception("An error occurred while updating the course", dbex);
             }
             catch (Exception ex)
             {

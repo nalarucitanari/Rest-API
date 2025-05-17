@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using SimpleRESTAPI;
 using SimpleRESTAPI.Data;
+using SimpleRESTAPI.DTO;
 using SimpleRESTAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //Dependency Injection
 builder.Services.AddScoped<ICategory, CategoryEF>();
-builder.Services.AddSingleton<IInstructor, InstructorADO>();
+builder.Services.AddScoped<IInstructor, InstructorEF>();
 builder.Services.AddScoped<ICourse, CourseEF>();
 
 
@@ -112,30 +113,159 @@ app.MapDelete("api/v1/instructor/{id}", (IInstructor instructorData, int id) =>
     instructorData.DeleteInstructor(id);
     return Results.NoContent();
 });
+
 app.MapGet("api/v1/courses",(ICourse courseData) =>
 {
-    var courses = courseData.GetCourses();
-    return courses;
+    List<CourseDTO> courseDTOs = new List<CourseDTO>();
+    var courses = courseData.GetAllCourses();
+    //mapping to CourseDTO
+    foreach (var course in courses)
+    {
+        CourseDTO courseDTO = new CourseDTO
+        {
+            CourseId = course.CourseId,
+            CourseName = course.CourseName,
+            CourseDescription = course.CourseDescription,
+            Duration = course.Duration,
+            Category = new CategoryDTO
+            {
+                categoryId = course.Category.categoryId,
+                categoryName = course.Category.categoryName
+            },
+            Instructor = course.Instructor != null ? new InstructorDTO
+            {
+                InstructorId = course.Instructor.InstructorId,
+                InstructorName = course.Instructor.InstructorName
+            }
+            : null
+
+        };
+        courseDTOs.Add(courseDTO);
+    }
+    return courseDTOs;
 });
 app.MapGet("api/v1/courses/{id}", (ICourse courseData, int id) =>
 {
-    var course = courseData.GetCourseById(id);
-    return course;
+    CourseDTO courseDTO = new CourseDTO();
+    var course = courseData.GetCourseByIdCourse(id);
+    if (course == null)
+    {
+        return Results.NotFound();
+    }
+    courseDTO.CourseId = course.CourseId;
+    courseDTO.CourseName = course.CourseName;
+    courseDTO.CourseDescription = course.CourseDescription;
+    courseDTO.Duration = course.Duration;
+    courseDTO.Category = new CategoryDTO
+    {
+        categoryId = course.Category.categoryId,
+        categoryName = course.Category.categoryName
+    };
+    courseDTO.Instructor = new InstructorDTO
+    {
+        InstructorId = course.Instructor.InstructorId,
+        InstructorName = course.Instructor.InstructorName
+    };
+    return Results.Ok(courseDTO);
 });
-app.MapPost("api/v1/courses", (ICourse courseData, Course course) =>
+app.MapPost("api/v1/courses", (ICourse courseData, CourseAddDTO courseAddDto) =>
 {
-    var newCourse = courseData.AddCourse(course);
-    return newCourse;
+     try
+    {
+        Course course = new Course
+        {
+            CourseName = courseAddDto.CourseName,
+            CourseDescription = courseAddDto.CourseDescription,
+            Duration = courseAddDto.Duration,
+            categoryId = courseAddDto.categoryId,
+            InstructorId = courseAddDto.InstructorId
+        };
+
+        var newCourse = courseData.AddCourse(course);
+
+        CourseDTO courseDTO = new CourseDTO
+        {
+            CourseId = newCourse.CourseId,
+            CourseName = newCourse.CourseName,
+            CourseDescription = newCourse.CourseDescription,
+            Duration = newCourse.Duration,
+            Category = newCourse.Category != null ? new CategoryDTO
+            {
+                categoryId = newCourse.Category.categoryId,
+                categoryName = newCourse.Category.categoryName
+            } : null,
+            Instructor = newCourse.Instructor != null ? new InstructorDTO
+            {
+                InstructorId = newCourse.Instructor.InstructorId,
+                InstructorName = newCourse.Instructor.InstructorName
+            } : null
+        };
+
+        return Results.Created($"/api/v1/courses/{courseDTO.CourseId}", courseDTO);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
 });
 app.MapPut("api/v1/courses", (ICourse courseData, Course course) =>
 {
-    var updateCourse = courseData.UpdateCourse(course);
-    return updateCourse;
+    try
+    {
+        var updatedCourse = courseData.UpdateCourse(course);
+
+        CourseDTO courseDTO = new CourseDTO
+        {
+            CourseId = updatedCourse.CourseId,
+            CourseName = updatedCourse.CourseName,
+            CourseDescription = updatedCourse.CourseDescription,
+            Duration = updatedCourse.Duration,
+            Category = new CategoryDTO
+            {
+                categoryId = updatedCourse.categoryId,
+                categoryName = updatedCourse.Category.categoryName
+            },
+            Instructor = new InstructorDTO
+            {
+                InstructorId = updatedCourse.InstructorId,
+                InstructorName = updatedCourse.Instructor.InstructorName
+            }
+        };
+
+        return Results.Ok(courseDTO);
+    }
+    catch (KeyNotFoundException knfEx)
+    {
+        return Results.NotFound(knfEx.Message);
+    }
+    catch (DbUpdateException dbex)
+    {
+        return Results.Problem("An error occurred while updating the course", statusCode: 500);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem("An unexpected error occurred", statusCode: 500);
+    }
 });
 app.MapDelete("api/v1/courses/{id}", (ICourse courseData, int id) =>
 {
-    courseData.DeleteCourse(id);
-    return Results.NoContent();
+    try
+    {
+        courseData.DeleteCourse(id);
+        return Results.NoContent();
+    }
+    catch (KeyNotFoundException knfEx)
+    {
+        return Results.NotFound(knfEx.Message);
+    }
+    catch (DbUpdateException dbex)
+    {
+        return Results.Problem("An error occurred while deleting the course", statusCode: 500);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem("An unexpected error occurred", statusCode: 500);
+    }
 });
 app.Run();
 

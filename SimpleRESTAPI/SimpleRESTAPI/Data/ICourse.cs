@@ -13,6 +13,10 @@ namespace SimpleRESTAPI.Data
         Course AddCourse(Course course);
         Course UpdateCourse(Course course);
         void DeleteCourse(int courseId);
+        IEnumerable<Course> GetCoursesByCategoryId(int categoryId);
+
+        Course GetCourseByIdCourse(int courseId);
+        IEnumerable<Course> GetAllCourses();
 
     }
 }
