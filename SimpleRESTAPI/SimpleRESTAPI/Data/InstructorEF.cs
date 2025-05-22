@@ -56,6 +56,11 @@ namespace SimpleRESTAPI.Data
             return instructors;
         }
 
+        public Instructor GetInstructorByIdCourse(int courseId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Instructor> GetInstructors()
         {
             var instructors = _context.Instructors.OrderByDescending(c => c.InstructorName).ToList();

@@ -199,3 +199,5 @@ D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\SimpleRESTAPI.pdb
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\SimpleRESTAPI.genruntimeconfig.cache
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\ref\SimpleRESTAPI.dll
+D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.dll
+D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

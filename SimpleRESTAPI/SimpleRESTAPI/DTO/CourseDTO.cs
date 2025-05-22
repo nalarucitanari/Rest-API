@@ -14,5 +14,6 @@ namespace SimpleRESTAPI.DTO
         public double Duration { get; set; }
         public CategoryDTO? Category { get; set; }
         public InstructorDTO? Instructor { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

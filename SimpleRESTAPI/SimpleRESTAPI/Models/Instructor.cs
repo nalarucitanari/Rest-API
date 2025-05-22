@@ -13,6 +13,7 @@ namespace SimpleRESTAPI.Models
         public string InstructorPhone { get; set; } 
         public string InstructorAddress { get; set; } = null!;
         public string InstructorCity { get; set; } = null!;
+        public string InstructorCountry { get; set; } = null!;
         public IEnumerable<Course> Courses { get; set; } = new List<Course>(); 
     }
 }

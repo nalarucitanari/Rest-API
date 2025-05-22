@@ -103,6 +103,11 @@ namespace SimpleRESTAPI.Data
             return instructor;
         }
 
+        public Instructor GetInstructorByIdCourse(int courseId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Instructor> GetInstructors()
         {
             List<Instructor> instructors = new List<Instructor>();

@@ -124,39 +124,21 @@ namespace SimpleRESTAPI.Data
 
         public Course UpdateCourse(Course course)
         {
-            try
+            var existingCourse = _context.Courses
+                .FirstOrDefault(c => c.CourseId == course.CourseId);
+            if (existingCourse == null)
             {
-                if (course == null)
-                {
-                    throw new ArgumentNullException(nameof(course), "Course cannot be null");
-                }
+                throw new Exception("Course not found");
+            }
 
-                var existingCourse = _context.Courses.Find(course.CourseId);
-                if (existingCourse == null)
-                {
-                    throw new Exception("Course not found");
-                }
-                    existingCourse.CourseName = course.CourseName;
-                    existingCourse.categoryId = course.categoryId;
-                    existingCourse.InstructorId = course.InstructorId;
-                    existingCourse.CourseDescription = course.CourseDescription;
-                    existingCourse.Duration = course.Duration;
-                    _context.SaveChanges();
-                    var updatedCourse = _context.Courses
-                    .Include(c => c.Category)
-                    .Include(c => c.Instructor)
-                    .FirstOrDefault(c => c.CourseId == course.CourseId);
+            existingCourse.CourseName = course.CourseName;
+            existingCourse.CourseDescription = course.CourseDescription;
+            existingCourse.Duration = course.Duration;
+            existingCourse.categoryId = course.categoryId;
+            existingCourse.InstructorId = course.InstructorId;
 
-                    return updatedCourse;
-            }
-            catch (DbUpdateException dbex)
-            {
-                throw new Exception("An error occurred while updating the course", dbex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error updating course", ex);
-            }
+            _context.SaveChanges();
+            return existingCourse;
         }
     }
 }

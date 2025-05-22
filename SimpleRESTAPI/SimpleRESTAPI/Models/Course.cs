@@ -15,6 +15,7 @@ namespace SimpleRESTAPI.Models
         public Category? Category { get; set; }
         public int InstructorId { get; set; }
         public Instructor? Instructor { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
     }
 }

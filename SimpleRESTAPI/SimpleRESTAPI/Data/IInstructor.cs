@@ -8,12 +8,14 @@ namespace SimpleRESTAPI.Data
 {
     public interface IInstructor
     {
-        IEnumerable<Instructor> GetInstructors();   
-        
+        IEnumerable<Instructor> GetInstructors();
+
         Instructor GetInstructorById(int InstructorId);
         Instructor AddInstructor(Instructor instructor);
         Instructor UpdateInstructor(Instructor instructor);
-        void DeleteInstructor(int instructorId);   
+        void DeleteInstructor(int instructorId);
+        Instructor GetInstructorByIdCourse(int courseId);
+        
 
     }
 }
