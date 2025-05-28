@@ -19,6 +19,9 @@ namespace SimpleRESTAPI.DTO
             CreateMap<CourseDTO, Course>();
             CreateMap<CategoryDTO, Category>();
             CreateMap<InstructorDTO, Instructor>();
+
+            CreateMap<AspUserDTO, AspUser>();
+            CreateMap<AspUser, AspUserDTO>();
         }
     }
     

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using SimpleRESTAPI;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICategory, CategoryEF>();
 builder.Services.AddScoped<IInstructor, InstructorEF>();
 builder.Services.AddScoped<ICourse, CourseEF>();
+builder.Services.AddScoped<IAspUser, AspUserEF>();
 
 // ...existing code...
 builder.Services.AddAutoMapper(typeof(SimpleRESTAPI.DTO.Mapping));
@@ -345,6 +347,41 @@ app.MapDelete("api/v1/courses/{id}", (ICourse courseData, int id) =>
     catch (Exception ex)
     {
         return Results.Problem("An unexpected error occurred", statusCode: 500);
+    }
+});
+
+app.MapGet("api/v1/cekpassword/{password}", (string password) =>
+{
+    var pass = SimpleRESTAPI.Helpers.HashHelper.HashPassword(password);
+    return Results.Ok($"Password: {password} Hash: {pass}");
+});
+app.MapPost("api/v1/register", (IAspUser aspUserData, AspUserDTO userDto, IMapper mapper) =>
+{
+    try
+    {
+        var user = mapper.Map<AspUser>(userDto);
+        var newUser = aspUserData.RegisterUser(user);
+        var resultDto = mapper.Map<AspUserDTO>(newUser);
+        return Results.Created($"/api/v1/users/{resultDto.Username}", resultDto);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+app.MapPost("api/v1/login", (IAspUser aspUserData, SimpleRESTAPI.DTO.AspUserLoginDTO loginDto) =>
+{
+    try
+    {
+        var isValid = aspUserData.Login(loginDto.Username, loginDto.Password);
+        if (!isValid)
+            return Results.Unauthorized();
+
+        return Results.Ok("Login success");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
     }
 });
 app.Run();
