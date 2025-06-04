@@ -1,7 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SimpleRESTAPI;
 using SimpleRESTAPI.Data;
 using SimpleRESTAPI.DTO;
@@ -22,6 +25,27 @@ builder.Services.AddScoped<ICategory, CategoryEF>();
 builder.Services.AddScoped<IInstructor, InstructorEF>();
 builder.Services.AddScoped<ICourse, CourseEF>();
 builder.Services.AddScoped<IAspUser, AspUserEF>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(SimpleRESTAPI.Helpers.ApiSettings.GenerateSecretBytes()),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero // Optional: Set clock skew to zero for immediate expiration
+    };
+}); 
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+    .RequireAuthenticatedUser()
+    .Build();
+});
 
 // ...existing code...
 builder.Services.AddAutoMapper(typeof(SimpleRESTAPI.DTO.Mapping));
@@ -36,6 +60,9 @@ var app = builder.Build();
 // }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 var summaries = new[]
 {
@@ -72,7 +99,7 @@ app.MapGet("api/v1/categories", (ICategory categoryData) =>
 {
     var categories = categoryData.GetCategories();
     return categories;
-});
+}).RequireAuthorization();
 app.MapGet("api/v1/categories/{id}", (ICategory categoryData, int id) =>
 {
     var category = categoryData.GetCategoryById(id);
@@ -374,10 +401,14 @@ app.MapPost("api/v1/login", (IAspUser aspUserData, SimpleRESTAPI.DTO.AspUserLogi
     try
     {
         var isValid = aspUserData.Login(loginDto.Username, loginDto.Password);
-        if (!isValid)
-            return Results.Unauthorized();
-
-        return Results.Ok("Login success");
+        if (isValid)
+        {
+            var tokenService = aspUserData.GenerateToken(loginDto.Username);
+            loginDto.Password = string.Empty; // Clear password for security
+            loginDto.Token = tokenService;
+            return Results.Ok(loginDto);
+        }
+        return Results.Ok("Invalid username or password");
     }
     catch (Exception ex)
     {

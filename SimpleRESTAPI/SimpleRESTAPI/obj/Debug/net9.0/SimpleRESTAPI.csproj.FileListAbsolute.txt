@@ -39,9 +39,12 @@ D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\SimpleRESTAPI.runtimeconfig.json
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\SimpleRESTAPI.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\SimpleRESTAPI.pdb
+D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.dll
+D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Azure.Core.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Azure.Identity.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Humanizer.dll
+D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\Microsoft.Bcl.Cryptography.dll
@@ -199,5 +202,3 @@ D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\SimpleRESTAPI.pdb
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\SimpleRESTAPI.genruntimeconfig.cache
 D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\obj\Debug\net9.0\ref\SimpleRESTAPI.dll
-D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.dll
-D:\Semester 4\Desain Restfull API\Rest-API\SimpleRESTAPI\SimpleRESTAPI\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

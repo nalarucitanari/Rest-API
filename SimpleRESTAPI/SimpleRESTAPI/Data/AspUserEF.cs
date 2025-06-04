@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SimpleRESTAPI.Models;
 
 namespace SimpleRESTAPI.Data
@@ -19,6 +21,32 @@ namespace SimpleRESTAPI.Data
             throw new NotImplementedException();
         }
 
+
+        public string GenerateToken(string username)
+        {
+           var user = GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with username '{username}' not found.");
+            }
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username)
+            };
+            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var key = Helpers.ApiSettings.GenerateSecretBytes();
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
         public IEnumerable<AspUser> GetAllUsers()
         {
             throw new NotImplementedException();
@@ -26,7 +54,17 @@ namespace SimpleRESTAPI.Data
 
         public AspUser GetUserByUsername(string username)
         {
-            throw new NotImplementedException();
+           if(string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            }
+
+            var user = _context.AspUsers.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with username '{username}' not found.");
+            }
+            return user;
         }
 
         public bool Login(string username, string password)
@@ -37,7 +75,7 @@ namespace SimpleRESTAPI.Data
 
             var hashed = Helpers.HashHelper.HashPassword(password);
             return user.Password == hashed;
-        }
+        } 
 
         public AspUser RegisterUser(AspUser user)
         {

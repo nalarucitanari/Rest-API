@@ -89,10 +89,10 @@ namespace SimpleRESTAPI.Data
                     dr.Read();
                     instructor.InstructorId = Convert.ToInt32(dr["InstructorId"]);
                     instructor.InstructorName = dr["InstructorName"].ToString();
-                        instructor.InstructorEmail = dr["InstructorEmail"].ToString();
-                        instructor.InstructorPhone = dr["InstructorPhone"].ToString();
-                        instructor.InstructorAddress = dr["InstructorAddress"].ToString();
-                        instructor.InstructorCity = dr["InstructorCity"].ToString();
+                        instructor.InstructorEmail = dr["InstructorEmail"]?.ToString() ?? "";
+                        instructor.InstructorPhone = dr["InstructorPhone"]?.ToString() ?? "";
+                        instructor.InstructorAddress = dr["InstructorAddress"]?.ToString() ?? "";
+                        instructor.InstructorCity = dr["InstructorCity"]?.ToString() ?? "";                 
                         return instructor;
                 }
                 else
